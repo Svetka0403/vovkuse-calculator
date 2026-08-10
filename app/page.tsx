@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { budgets, categories, packages, retailPrice } from "./catalog";
 
 const money = (value: number) => new Intl.NumberFormat("ru-RU").format(value) + " ₽";
@@ -75,6 +75,21 @@ export default function Home() {
   const activeIndex = baskets.findIndex((basket) => basket.id === activeBasket.id);
   const totalOrder = results.reduce((sum, item) => sum + item.result.total, 0);
   const groups = [...new Set(categories.map((item) => item.group))];
+
+  useEffect(() => {
+    const reportHeight = () => {
+      window.parent.postMessage(
+        { type: "vovkuse-calculator-height", height: document.documentElement.scrollHeight },
+        "*",
+      );
+    };
+
+    const observer = new ResizeObserver(reportHeight);
+    observer.observe(document.documentElement);
+    reportHeight();
+
+    return () => observer.disconnect();
+  }, []);
 
   const fittingPackage = (count: number) => [...packages]
     .filter((pack) => count >= pack.minItems && count <= pack.maxItems)
