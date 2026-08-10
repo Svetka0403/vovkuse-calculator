@@ -77,9 +77,15 @@ export default function Home() {
   const groups = [...new Set(categories.map((item) => item.group))];
 
   useEffect(() => {
+    const pageContent = document.querySelector("main");
+
     const reportHeight = () => {
+      const contentBottom = pageContent
+        ? pageContent.getBoundingClientRect().bottom + window.scrollY
+        : document.body.scrollHeight;
+
       window.parent.postMessage(
-        { type: "vovkuse-calculator-height", height: document.documentElement.scrollHeight },
+        { type: "vovkuse-calculator-height", height: Math.ceil(contentBottom) },
         "*",
       );
     };
@@ -99,7 +105,7 @@ export default function Home() {
     };
 
     const observer = new ResizeObserver(reportHeight);
-    observer.observe(document.documentElement);
+    observer.observe(pageContent ?? document.body);
     window.addEventListener("message", handleParentMessage);
     reportHeight();
 
