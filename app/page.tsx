@@ -84,12 +84,41 @@ export default function Home() {
       );
     };
 
+    const handleParentMessage = (event: MessageEvent) => {
+      if (event.data?.type !== "vovkuse-calculator-show-summary") return;
+      const summary = document.getElementById("summary");
+      if (!summary) return;
+
+      window.parent.postMessage(
+        {
+          type: "vovkuse-calculator-scroll-target",
+          offsetTop: summary.getBoundingClientRect().top + window.scrollY,
+        },
+        "*",
+      );
+    };
+
     const observer = new ResizeObserver(reportHeight);
     observer.observe(document.documentElement);
+    window.addEventListener("message", handleParentMessage);
     reportHeight();
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("message", handleParentMessage);
+    };
   }, []);
+
+  useEffect(() => {
+    window.parent.postMessage(
+      {
+        type: "vovkuse-calculator-state",
+        total: money(totalOrder),
+        basketCount: baskets.length,
+      },
+      "*",
+    );
+  }, [totalOrder, baskets.length]);
 
   const fittingPackage = (count: number) => [...packages]
     .filter((pack) => count >= pack.minItems && count <= pack.maxItems)
