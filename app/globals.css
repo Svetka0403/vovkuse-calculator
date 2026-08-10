@@ -39,3 +39,5 @@
 .embedded .topbar,.embedded .intro{display:none}
 .embedded .workspace{padding-top:0}
 @media(max-width:600px){.embedded .workspace{padding-left:20px;padding-right:20px}}
+
+@media(max-width:600px){.embedded .mobile-total{display:none!important}}
