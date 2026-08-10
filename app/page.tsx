@@ -211,17 +211,7 @@ export default function Home() {
 
   return (
     <main>
-      <header className="topbar">
-        <a className="brand" href="#" aria-label="ВоВкусе — на главную"><span className="brand-mark">В</span><span><strong>ВоВкусе</strong><small>подарки со вкусом</small></span></a>
-      </header>
-
-      <section className="intro">
-        <p className="eyebrow">СОБЕРИТЕ СВОЙ ПОДАРОК</p>
-        <h1>Калькулятор<br />подарочной корзины</h1>
-        <p>Укажите максимальный бюджет, выберите состав и оформление. Можно собрать несколько разных корзин в одном заказе.</p>
-      </section>
-
-      <div className="workspace">
+<div className="workspace">
         <div className="configurator">
           <fieldset className="step" id="config-start">
             <legend><span>01</span> Бюджет на корзину {activeIndex + 1}</legend>
