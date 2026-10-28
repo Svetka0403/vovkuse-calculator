@@ -226,6 +226,14 @@ export default function Home() {
 
   const sendToWhatsApp = () => {
     if (!validateOrder()) return;
+    // The parent Tilda page owns the Metrika session and goal attribution.
+    // Only notify it of a valid messenger click; the drafted order is private.
+    if (window.parent !== window) {
+      window.parent.postMessage(
+        { type: "vovkuse-calculator-whatsapp-click" },
+        "https://vovkuse.msk.ru",
+      );
+    }
     window.open(`https://wa.me/${businessWhatsApp}?text=${encodeURIComponent(orderText())}`, "_blank", "noopener,noreferrer");
   };
   const shareOrder = async () => {
