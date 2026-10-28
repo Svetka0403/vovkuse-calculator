@@ -68,6 +68,7 @@ export default function Home() {
   const [validationError, setValidationError] = useState<{ basketId: number; field: ValidationField; message: string } | null>(null);
   const [autoPackageNotice, setAutoPackageNotice] = useState<{ basketId: number; message: string } | null>(null);
   const nextBasketId = useRef(2);
+  const startReported = useRef(false);
 
   const activeBasket = baskets.find((basket) => basket.id === activeBasketId) ?? baskets[0];
   const results = useMemo(() => baskets.map((basket) => ({ basket, result: calculateBasket(basket) })), [baskets]);
@@ -130,10 +131,21 @@ export default function Home() {
     .filter((pack) => count >= pack.minItems && count <= pack.maxItems)
     .sort((a, b) => a.maxItems - b.maxItems || a.base - b.base)[0];
 
+  const reportStarted = () => {
+    if (startReported.current || window.parent === window) return;
+    startReported.current = true;
+    window.parent.postMessage(
+      { type: "vovkuse-calculator-start" },
+      "https://vovkuse.msk.ru",
+    );
+  };
+
   const updateActiveBasket = (patch: Partial<BasketDraft>) => {
+    reportStarted();
     setBaskets((current) => current.map((basket) => basket.id === activeBasket.id ? { ...basket, ...patch } : basket));
   };
   const changeCount = (id: string, next: number, max: number) => {
+    reportStarted();
     const counts = { ...activeBasket.counts, [id]: Math.max(0, Math.min(max, next)) };
     const count = Object.values(counts).reduce((sum, value) => sum + value, 0);
     const currentPack = packages.find((pack) => pack.id === activeBasket.packageId) ?? packages[0];
